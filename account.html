@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Account Page</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+}
+
+/* HEADER */
+.header {
+  background: #2d0dbf;
+  color: white;
+  padding: 20px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* PAGE CONTENT */
+.page {
+  display: none;
+  padding: 20px;
+}
+
+
+
+/* PROFILE */
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.profile img {
+  width: 70px;
+}
+
+.username {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* SECTIONS */
+.section-title {
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 18px;
+  border-bottom: 2px solid #aaa;
+  padding-bottom: 5px;
+}
+
+.item {
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* TOGGLE SWITCH */
+.switch {
+  position: fixed;
+  width: 10px;
+  height: 20px;
+}
+
+/*can remove this*/
+.switch input {
+  display: none;
+}
+
+
+
+.nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: white;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+}
+
+input:checked + .slider {
+  background: #28a745;
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* NAVBAR */
+.nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: rgb(255, 255, 255);
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+}
+
+
+.navbar button {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  background: none;
+  font-size: 14px;
+}
+
+.nav-item {
+  text-align: center;
+  font-size: 12px;
+}
+
+/* REPORT BUTTON */
+.report-btn {
+  background: red;
+  padding: 15px;
+  border-radius: 15px;
+  color: black;
+  font-weight: bold;
+  margin-top: -20px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ACCOUNT PAGE -->
+  <div class="header">ACCOUNT</div>
+
+  <div class="profile">
+    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+    <div>
+      <div>Hello,</div>
+      <div class="username">@MariaS</div>
+      ⭐ 3-Star Contributor
+    </div>
+  </div>
+
+  <div class="section-title">My Dashboard</div>
+
+  <div class="item">
+    <span>Minutes saved (Month):</span>
+    <b>120</b>
+  </div>
+
+  <div class="item">
+    <span>Reports Vouched:</span>
+    <b>45</b>
+  </div>
+
+  <div class="section-title">Security</div>
+
+  <div class="item">Saved Routes</div>
+  <div class="item">Change Password</div>
+
+  <div class="item">
+    <span>Download Offline Schedules</span>
+    <label class="switch">
+      <input type="checkbox" checked>
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div style="color:red; margin-top:10px;">&lt; LOG OUT &gt;</div>
+</div>
+
+
+<!-- NAVBAR -->
+<div class="nav">
+  <div class="nav-item" onclick="goHome()">🏠<br>HOME</div>
+  <div class="nav-item" onclick="goRoutes()">🗺️<br>ROUTES</div>
+  <div class="nav-item" onclick="goReport()">REPORT</div>
+  <div class="nav-item" onclick="goCommunity()">🔔<br>COMMUNITY</div>
+  <div class="nav-item" onclick="goAccount()">👤<br>ACCOUNT</div>
+</div>
+
+<script>
+function goHome() { window.location.href = "home.html"; }
+function goRoutes() { window.location.href = "routes.html"; }
+function goCommunity() { window.location.href = "community.html";}
+function goReport() { window.location.href = "report.html"; }
+function goAccount() { window.location.href = "account.html";}
+</script>
+ 
+
+</body>
+</html>

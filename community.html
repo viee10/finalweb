@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Community</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #f2f2f2;
+}
+
+/* HEADER */
+.header {
+  background: #2c00cc;
+  color: white;
+  padding: 15px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* CONTENT */
+.container {
+  padding: 20px;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.center {
+  text-align: center;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+/* POST */
+.post {
+  background: #eee;
+  padding: 15px;
+  border-radius: 15px;
+  margin-top: 15px;
+}
+
+.user {
+  font-weight: bold;
+}
+
+.actions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* NAV */
+.nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: rgb(255, 255, 255);
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+}
+
+.nav-item {
+  text-align: center;
+  font-size: 12px;
+}
+
+.report-btn {
+  background: red;
+  padding: 15px;
+  border-radius: 15px;
+  color: black;
+  font-weight: bold;
+  margin-top: -20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">COMMUNITY</div>
+
+<div class="container">
+
+  <div class="title">POST DETAIL</div>
+
+  <div class="center">
+    LAST REPORTED: “LARGA NA!” (3 MINS AGO)
+  </div>
+
+  <p>THREAD REPLIES</p>
+
+  <div class="post">
+    <div class="user">MariaS</div>
+    <p>arf</p>
+
+    <div class="actions">
+      👍 2 💬 3 ⭐ Vouch
+    </div>
+  </div>
+
+  <div class="post">
+    <div class="user">MariaS</div>
+    <p>meow</p>
+
+    <div class="actions">
+      👍 2 💬 3 ⭐ Vouch
+    </div>
+  </div>
+
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <div class="nav-item" onclick="goHome()">🏠<br>HOME</div>
+  <div class="nav-item" onclick="goRoutes()">🗺️<br>ROUTES</div>
+  <div class="nav-item" onclick="goReport()">REPORT</div>
+  <div class="nav-item" onclick="goCommunity()">🔔<br>COMMUNITY</div>
+  <div class="nav-item" onclick="goAccount()">👤ACCOUNT</div>
+</div>
+
+<script>
+ function goHome() { window.location.href = "home.html"; }
+ function goRoutes() { window.location.href = "routes.html"; }
+ function goReport() { window.location.href = "report.html"; }
+ function goCommunity() { window.location.href = "community.html";}
+ function goAccount() { window.location.href = "account.html";}
+</script>
+
+</body>
+</html>
