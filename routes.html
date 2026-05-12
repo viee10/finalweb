@@ -5,183 +5,487 @@
 <title>Routes</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f2f2f2;
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f2f2f2;
+  padding-bottom:140px;
 }
 
 /* HEADER */
-.header {
-  background: #2c00cc;
-  color: white;
-  padding: 15px;
-  font-size: 22px;
-  font-weight: bold;
+
+.header{
+  background:#2c00cc;
+  color:white;
+  padding:15px;
+  font-size:22px;
+  font-weight:bold;
 }
 
 /* TITLE */
-.title {
-  padding: 15px;
-  font-size: 20px;
-  font-weight: bold;
+
+.title{
+  padding:15px;
+  font-size:20px;
+  font-weight:bold;
+}
+
+/* ROUTES GRID */
+
+.routes-container{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  padding:15px;
 }
 
 /* CARD */
-.card {
-  background: #e6e6e6;
-  margin: 15px;
-  padding: 15px;
-  border-radius: 20px;
-  box-shadow: 0 6px 10px rgba(0,0,0,0.2);
+
+.card{
+  background:#e6e6e6;
+  padding:15px;
+  border-radius:20px;
+  box-shadow:0 6px 10px rgba(0,0,0,0.2);
 }
 
-/* MAP PLACEHOLDER */
-.map {
-  height: 120px;
-  background: #ccc;
-  border-radius: 15px;
-  margin-bottom: 10px;
+/* MAP */
+
+.map{
+  height:130px;
+  border-radius:15px;
+  overflow:hidden;
+  margin-bottom:10px;
+  background:#ccc;
 }
+
+.map img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+
+.map img{
+  cursor:pointer;
+}
+
+/* POPUP */
+
+.popup{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.8);
+  justify-content:center;
+  align-items:center;
+  z-index:2000;
+}
+
+.popup img{
+  width:90%;
+  max-width:700px;
+  border-radius:20px;
+}
+
+
 
 /* STATUS */
-.status {
-  margin-top: 5px;
+
+.dot-red{
+  color:red;
 }
 
-.dot-red {
-  color: red;
-}
-
-.dot-green {
-  color: green;
-}
-
-/* TABLE */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-
-th, td {
-  border: 1px solid #999;
-  padding: 8px;
-  text-align: center;
+.dot-green{
+  color:green;
 }
 
 /* BUTTON */
-.btn {
-  width: 100%;
-  margin-top: 15px;
-  padding: 15px;
-  background: #2c00cc;
-  color: white;
-  border: none;
-  border-radius: 20px;
-  font-size: 18px;
-  cursor: pointer;
+
+.save-btn{
+  width:100%;
+  margin-top:12px;
+  padding:10px;
+  border:none;
+  border-radius:12px;
+  background:#1800cc;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.save-btn:hover{
+  opacity:0.9;
+}
+
+/* TABLE CARD */
+
+.big-card{
+  grid-column:1 / span 2;
+  background:#e6e6e6;
+  padding:15px;
+  border-radius:20px;
+  box-shadow:0 6px 10px rgba(0,0,0,0.2);
+}
+
+/* TABLE */
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+
+th, td{
+  border:1px solid #999;
+  padding:8px;
+  text-align:center;
+}
+
+/* FIND BUTTON */
+
+.btn{
+  width:100%;
+  margin-top:15px;
+  padding:15px;
+  background:#2c00cc;
+  color:white;
+  border:none;
+  border-radius:20px;
+  font-size:18px;
+  cursor:pointer;
 }
 
 /* NAVBAR */
-.nav {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: white;
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 0;
+
+.nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:white;
+  display:flex;
+  justify-content:space-around;
+  padding:10px 0;
+  z-index:1000;
+  box-shadow:0 -3px 10px rgba(0,0,0,0.1);
 }
 
-.nav-item {
-  text-align: center;
-  font-size: 12px;
+.nav-item{
+  text-align:center;
+  font-size:12px;
 }
 
-.report-btn {
-  background: red;
-  padding: 15px;
-  border-radius: 15px;
-  margin-top: -20px;
+.report-btn{
+  background:red;
+  padding:15px;
+  border-radius:15px;
+  color:black;
+  font-weight:bold;
+  margin-top:-20px;
 }
+
 </style>
-
 </head>
 
 <body>
 
-<div class="header">ROUTES</div>
+<div class="header">
+ROUTES
+</div>
 
-<div class="title">AVAILABLE ROUTES</div>
+<div class="title">
+AVAILABLE ROUTES
+</div>
+
+<div class="routes-container">
 
 <!-- ROUTE CARD 1 -->
+
 <div class="card">
-  <div class="map"></div>
-  <b>FLORIDABLANCA - GUAGUA</b><br>
-  Waiting Time: ~30 minutes<br>
-  <span class="dot-red">● Peak</span>
-  <span class="dot-green">● Off</span>
+
+<div class="map">
+<img
+src="c:\Users\Kervy Ibay\Downloads\IMG_20260512_044827_096.jpg"
+onclick="openPopup(this.src)">
+</div>
+
+<b>GUAGUA - SM PAMPANGA</b><br><br>
+
+Waiting Time: ~30 minutes<br><br>
+
+<span class="dot-red">● Peak</span>
+<span class="dot-green">● Off</span>
+
+<button class="save-btn"
+onclick="saveRoute(
+'GUAGUA - SM PAMPANGA',
+'Guagua ➜ SM Pampanga',
+'c:\\Users\\Kervy Ibay\\Downloads\\IMG_20260512_044827_096.jpg',
+['Terminal','Guagua','SM Pampanga']
+)">
+Save Route
+</button>
+
+
 </div>
 
 <!-- ROUTE CARD 2 -->
+
 <div class="card">
-  <div class="map"></div>
-  <b>FLORIDABLANCA - GUAGUA</b><br>
-  Waiting Time: ~30 minutes<br>
-  <span class="dot-red">● Peak</span>
-  <span class="dot-green">● Off</span>
+
+<div class="map">
+<img
+src="c:\Users\Kervy Ibay\Downloads\IMG_20260512_221621_457.jpg"
+onclick="openPopup(this.src)">
 </div>
 
-<!-- TABLE CARD -->
+<b>GUAGUA - FLORIDABLANCA</b><br><br>
+
+Waiting Time: ~40 minutes<br><br>
+
+<span class="dot-red">● Peak</span>
+<span class="dot-green">● Off</span>
+
+<button class="save-btn"
+onclick="saveRoute(
+'GUAGUA - FLORIDABLANCA',
+'Floridablanca ➜ SM Pampanga',
+'c:\\Users\\Kervy Ibay\\Downloads\\IMG_20260512_221621_457.jpg',
+['Terminal','Floridablanca','SM Pampanga']
+)">
+Save Route
+</button>
+
+</div>
+
+<!-- ROUTE CARD 3 -->
+
 <div class="card">
-  <h3>GUAGUA - SM PAMPANGA</h3>
 
-  <table>
-    <tr>
-      <th>Item</th>
-      <th>Description</th>
-      <th>Quantity</th>
-      <th>Unit</th>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>SM Pampanga</td>
-      <td>5</td>
-      <td>1930</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>Guagua - Bacolor</td>
-      <td>3</td>
-      <td>1340</td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>Guagua - Intersection</td>
-      <td>4</td>
-      <td>1540</td>
-    </tr>
-  </table>
+<div class="map">
+<img
+src="c:\Users\Kervy Ibay\Downloads\IMG_20260512_222110_710.jpg"
+onclick="openPopup(this.src)">
+</div>
 
-  <button class="btn">FIND CLOSEST TERMINAL</button>
+<b>GUAGUA - BACOLOR</b><br><br>
+
+Waiting Time: ~25 minutes<br><br>
+
+<span class="dot-red">● Peak</span>
+<span class="dot-green">● Off</span>
+
+
+<button class="save-btn"
+onclick="saveRoute(
+'GUAGUA - BACOLOR',
+'Guagua ➜ Bacolor',
+'c:\\Users\\Kervy Ibay\\Downloads\\IMG_20260512_222110_710.jpg',
+['Terminal','Guagua','Bacolor']
+)">
+Save Route
+</button>
+
+</div>
+
+<!-- ROUTE CARD 4 -->
+
+<div class="card">
+
+<div class="map">
+
+<!-- PUT YOUR OWN IMAGE HERE -->
+<img
+src="c:\Users\Kervy Ibay\Downloads\IMG_20260512_222342_623.jpg"
+onclick="openPopup(this.src)">
+</div>
+
+<b>GUAGUA - SAN FERNANDO</b><br><br>
+
+Waiting Time: ~35 minutes<br><br>
+
+<span class="dot-red">● Peak</span>
+<span class="dot-green">● Off</span>
+
+<button class="save-btn"
+onclick="saveRoute(
+'GUAGUA - SAN FERNANDO',
+'Guagua ➜ San Fernando',
+'c:\\Users\\Kervy Ibay\\Downloads\\IMG_20260512_222342_623.jpg',
+['Terminal','Guagua','San Fernando']
+)">
+Save Route
+</button>
+
+</div>
+
+
+<!-- TABLE CARD -->
+
+<div class="big-card">
+
+<h3>TERMINAL</h3>
+
+<table>
+
+<tr>
+<th>Item</th>
+<th>Description</th>
+<th>Quantity</th>
+<th>Unit</th>
+</tr>
+
+<tr>
+<td>1</td>
+<td>SM Pampanga</td>
+<td>5</td>
+<td>1930</td>
+</tr>
+
+<tr>
+<td>2</td>
+<td>Guagua - Bacolor</td>
+<td>3</td>
+<td>1340</td>
+</tr>
+
+<tr>
+<td>3</td>
+<td>Guagua - Intersection</td>
+<td>4</td>
+<td>1540</td>
+</tr>
+
+</table>
+
+<button class="btn">
+FIND CLOSEST TERMINAL
+</button>
+
+</div>
+
 </div>
 
 <!-- NAVBAR -->
+
 <div class="nav">
-  <div class="nav-item" onclick="goHome()">🏠<br>HOME</div>
-  <div class="nav-item" onclick="goRoutes()">🗺️<br>ROUTES</div>
-  <div class="nav-item report-btn" onclick="goReport()">REPORT</div>
-  <div class="nav-item" onclick= "goCommunity()">🔔<br>COMMUNITY</div>
-  <div class="nav-item" onclick= "goAccount()"><br>ACCOUNT</div>
+
+<div class="nav-item" onclick="goHome()">
+🏠<br>HOME
 </div>
 
+<div class="nav-item" onclick="goRoutes()">
+🗺️<br>ROUTES
+</div>
+
+<div class="nav-item report-btn" onclick="goReport()">
+REPORT
+</div>
+
+<div class="nav-item" onclick="goCommunity()">
+🔔<br>COMMUNITY
+</div>
+
+<div class="nav-item" onclick="goAccount()">
+👤<br>ACCOUNT
+</div>
+
+</div>
+
+
+
+<!-- IMAGE POPUP -->
+
+<div class="popup" id="popup" onclick="closePopup()">
+
+<img id="popupImg">
+
+</div>
+
+
+
+
+
 <script>
-function goHome() { window.location.href = "home.html"; }
-function goRoutes() { window.location.href = "routes.html"; }
-function goCommunity() { window.location.href = "community.html";}
-function goReport() { window.location.href = "report.html"; }
-function goAccount() { window.location.href = "account.html";}
+
+function goHome(){
+window.location.href = "home.html";
+}
+
+function goRoutes(){
+window.location.href = "routes.html";
+}
+
+function goCommunity(){
+window.location.href = "community.html";
+}
+
+function goReport(){
+window.location.href = "report.html";
+}
+
+function goAccount(){
+window.location.href = "account.html";
+}
+
+/* =========================
+   SAVE ROUTE (FIXED)
+========================= */
+
+function saveRoute(name, path, image, stops){
+
+let routes =
+JSON.parse(localStorage.getItem("savedRoutes")) || [];
+
+/* REMOVE OLD BAD DATA */
+routes = routes.filter(r => typeof r === "object");
+
+/* CHECK DUPLICATE */
+const exists = routes.some(r => r.name === name);
+
+if(exists){
+alert("Route already saved!");
+return;
+}
+
+/* CREATE ROUTE OBJECT */
+const newRoute = {
+id: Date.now(),
+name: name,
+path: path,
+image: image,
+stops: stops
+};
+
+routes.push(newRoute);
+
+localStorage.setItem(
+"savedRoutes",
+JSON.stringify(routes)
+);
+
+alert("Route Saved!");
+
+}
+
+/* IMAGE POPUP */
+
+function openPopup(image){
+
+document.getElementById("popup").style.display = "flex";
+document.getElementById("popupImg").src = image;
+
+}
+
+function closePopup(){
+document.getElementById("popup").style.display = "none";
+}
+
 </script>
 
 </body>

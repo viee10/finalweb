@@ -21,18 +21,22 @@ body {
   border-radius: 10px;
   box-shadow: 0 0 15px rgba(0,0,0,0.1);
   text-align: center;
-  width: 300px;
+  width: 320px;
+}
+
+h2 {
+  margin-bottom: 20px;
 }
 
 input {
-  width: 90%;
+  width: 92%;
   padding: 10px;
-  margin: 8px 0;
+  margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
 
-button {
+.reset-btn {
   width: 100%;
   padding: 10px;
   background: #333;
@@ -40,23 +44,62 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 15px;
+  margin-top: 10px;
 }
 
-button:hover {
+.reset-btn:hover {
   background: #555;
+}
+
+.back-btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #2d0dbf;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background: #1d0890;
 }
 </style>
 </head>
 
+
+
 <body>
 
 <div class="container">
+
   <h2>Reset Password</h2>
 
-  <input type="email" id="email" placeholder="Enter your email">
-  <input type="password" id="newPassword" placeholder="New password">
+  <input 
+    type="email" 
+    id="email"
+    placeholder="Enter your email"
+  >
 
-  <button onclick="resetPassword()">Reset Password</button>
+  <input 
+    type="password" 
+    id="newPassword"
+    placeholder="New password"
+  >
+
+  <button class="reset-btn" onclick="resetPassword()">
+    Reset Password
+  </button>
+
+  <!-- GO BACK BUTTON BELOW -->
+  <button class="back-btn" onclick="goBack()">
+    ← Go Back
+  </button>
+
 </div>
 
 <script>
@@ -66,22 +109,41 @@ async function resetPassword() {
   const email = document.getElementById("email").value;
   const newPassword = document.getElementById("newPassword").value;
 
-  const res = await fetch(`${BASE_URL}/reset`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ email, newPassword })
-  });
-
-  const data = await res.json();
-
-  if (data.success) {
-    alert("Password updated!");
-    window.location.href = "finalweb.html";
-  } else {
-    alert("Email not found");
+  // validation
+  if (!email || !newPassword) {
+    alert("Please fill in all fields");
+    return;
   }
+
+  try {
+    const res = await fetch(`${BASE_URL}/reset`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, newPassword })
+    });
+
+    const text = await res.text();
+console.log("RAW RESPONSE:", text);
+
+const data = JSON.parse(text);
+
+    if (data.success) {
+      alert("Password updated!");
+      window.location.href = "finalweb.html";
+    } else {
+      alert("Email not found");
+    }
+
+  } catch (error) {
+    alert("Server error");
+    console.error(error);
+  }
+}
+
+function goBack() {
+  window.history.back();
 }
 </script>
 

@@ -5,6 +5,7 @@
 <title>Report</title>
 
 <style>
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -18,6 +19,18 @@ body {
   padding: 15px;
   font-size: 24px;
   font-weight: bold;
+  position: relative;
+}
+
+/* BACK ARROW */
+.back-arrow{
+  position:absolute;
+  left:15px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:28px;
+  cursor:pointer;
+  font-weight:bold;
 }
 
 /* GRID */
@@ -54,7 +67,7 @@ body {
 .red { background: #ff2d2d; color: white; }
 .gray { background: #ddd; }
 
-/* SELECTED EFFECT */
+/* SELECTED */
 .selected {
   outline: 4px solid #2c00cc;
 }
@@ -65,7 +78,7 @@ body {
   margin: 20px auto;
   display: block;
   padding: 15px;
-  background: #2c00cc;
+  background: #1800cc;
   color: white;
   border: none;
   border-radius: 20px;
@@ -86,7 +99,7 @@ body {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background: white;
+  background: rgb(250, 250, 250);
   display: flex;
   justify-content: space-around;
   padding: 10px 0;
@@ -101,8 +114,67 @@ body {
   background: red;
   padding: 15px;
   border-radius: 15px;
+  color: black;
+  font-weight: bold;
   margin-top: -20px;
 }
+
+/* FORM */
+.fare-box{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.fare-box select,
+.fare-box input{
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+}
+
+.submit-btn{
+  width:100%;
+  padding:15px;
+  margin-top:20px;
+  background:#1800cc;
+  color:white;
+  border:none;
+  border-radius:20px;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.cancel-btn-container{
+  display:flex;
+  justify-content:center;
+  margin-top:15px;
+}
+
+.cancel-btn{
+  color:red;
+  font-weight:bold;
+  cursor:pointer;
+  font-size:18px;
+}
+
+
+.header{
+  position:relative;
+  display:flex;
+  align-items:center;
+}
+
+/* TITLE SPACING */
+.title-text{
+  margin-left:50px; /* this creates space from arrow */
+  font-size:24px;
+  font-weight:bold;
+}
+
+
 
 </style>
 
@@ -110,85 +182,51 @@ body {
 
 <body>
 
-<div class="header">REPORT</div>
+<!-- HEADER -->
+<div class="header">
 
+  <div class="back-arrow" onclick="goBack()">←</div>
+
+  <div class="title-text">REPORT</div>
+
+</div>
+
+<!-- SELECT SCREEN -->
 <div id="selectScreen">
+
   <div class="grid">
 
-  <div class="box green" onclick="selectBox(this, 'EMPTY - LARGA')">
-    EMPTY - LARGA
-    <small>Plenty of Jeeps</small>
+    <div class="box green" onclick="selectBox(this,'EMPTY - LARGA')">
+      EMPTY - LARGA
+      <small>Plenty of Jeeps</small>
+    </div>
+
+    <div class="box yellow" onclick="selectBox(this,'MODERATE')">
+      MODERATE
+      <small>Wait < 10 mins</small>
+    </div>
+
+    <div class="box red" onclick="selectBox(this,'SUPER PUNO')">
+      SUPER PUNO
+      <small>Wait > 20 mins</small>
+    </div>
+
+    <div class="box gray" onclick="selectBox(this,'NO JEEPS')">
+      NO JEEPS
+      <small>Wala pa</small>
+    </div>
+
   </div>
 
-  <div class="box yellow" onclick="selectBox(this, 'MODERATE')">
-    MODERATE
-    <small>Wait &lt; 10 mins</small>
+  <button class="btn" onclick="goNext()">NEXT</button>
+
+  <div class="cancel" onclick="goHome()">
+    < CANCEL >
   </div>
 
-  <div class="box red" onclick="selectBox(this, 'SUPER PUNO')">
-    SUPER PUNO
-    <small>Wait &gt; 20 mins</small>
-  </div>
-
-  <div class="box gray" onclick="selectBox(this, 'NO JEEPS')">
-    NO JEEPS
-    <small>Wala pa</small>
-  </div>
 </div>
 
-<button class="btn" onclick="goNext()">NEXT</button>
-
-<div class="cancel" onclick="goHome()">&lt; CANCEL &gt;</div>
-</div> <!-- END selectScreen -->
-
-<!-- NAV -->
-<div class="nav">
-  <div class="nav-item" onclick="goHome()">🏠<br>HOME</div>
-  <div class="nav-item" onclick="goRoutes()">🗺️<br>ROUTES</div>
-  <div class="nav-item" onclick="goReport()">REPORT</div>
-  <div class="nav-item" onclick="goCommunity()">🔔<br>COMMUNITY</div>
-  <div class="nav-item" onclick="goAccount()">👤ACCOUNT</div>
-</div>
-
-<script>
-let selectedReport = "";
-
-function selectBox(element, value) {
-  document.querySelectorAll('.box').forEach(box => {
-    box.classList.remove('selected');
-  });
-
-  element.classList.add('selected');
-  selectedReport = value;
-}
-
-function goNext() {
-  if (selectedReport === "") {
-    alert("Please select first!");
-    return;
-  }
-
-  document.getElementById("selectScreen").style.display = "none";
-  document.getElementById("formScreen").style.display = "block";
-}
-
-function goBack() {
-  document.getElementById("formScreen").style.display = "none";
-  document.getElementById("selectScreen").style.display = "block";
-}
-
-function submitFinal() {
-  alert("Report submitted: " + selectedReport);
-}
-
-function goHome() { window.location.href = "home.html"; }
-function goRoutes() { window.location.href = "routes.html"; }
-function goCommunity() { window.location.href = "community.html";}
-function goAccount() { window.location.href = "account.html";}
-function goReport() { window.location.href = "report.html"; }
-</script>
-
-
+<!-- FORM SCREEN -->
 <div id="formScreen" style="display:none; padding:20px;">
 
   <h2>MAP MARKET PLACEMENT</h2>
@@ -198,18 +236,96 @@ function goReport() { window.location.href = "report.html"; }
   <textarea style="width:100%; height:100px;"></textarea>
 
   <h2>JEEPNEY FARE</h2>
-  <div style="display:flex; gap:10px;">
-    <div style="background:#ddd; padding:10px;">✔ STANDARD FARE</div>
-    <input placeholder="₱ Fare" style="flex:1;">
+
+  <div class="fare-box">
+
+    <select id="fareType">
+      <option>Standard Fare</option>
+      <option>Student Fare</option>
+      <option>Senior Citizen Fare</option>
+    </select>
+
+    <input type="text" placeholder="₱ Fare">
+
   </div>
 
-  <h2>PHOTO UPLOAD</h2>
-  <input type="file">
+  <button class="submit-btn" onclick="submitFinal()">
+    SUBMIT REPORT
+  </button>
 
-  <button onclick="submitFinal()">SUBMIT REPORT</button>
-  <p onclick="goBack()" style="color:red; cursor:pointer;">&lt; CANCEL &gt;</p>
+  <div class="cancel-btn-container">
+    <p class="cancel-btn" onclick="goBack()">
+      < CANCEL >
+    </p>
+  </div>
 
 </div>
+
+<!-- NAV -->
+<div class="nav">
+
+  <div class="nav-item" onclick="goHome()">🏠<br>HOME</div>
+  <div class="nav-item" onclick="goRoutes()">🗺️<br>ROUTES</div>
+  <div class="nav-item report-btn" onclick="goReport()">REPORT</div>
+  <div class="nav-item" onclick="goCommunity()">🔔<br>COMMUNITY</div>
+  <div class="nav-item" onclick="goAccount()">👤<br>ACCOUNT</div>
+
+</div>
+
+<script>
+
+let selectedReport = "";
+
+/* SELECT BOX */
+function selectBox(el, value){
+  document.querySelectorAll('.box').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedReport = value;
+}
+
+/* NEXT */
+function goNext(){
+  if(!selectedReport){
+    alert("Please select first!");
+    return;
+  }
+
+  document.getElementById("selectScreen").style.display = "none";
+  document.getElementById("formScreen").style.display = "block";
+}
+
+/* BACK BUTTON */
+function goBack(){
+
+const form = document.getElementById("formScreen");
+const select = document.getElementById("selectScreen");
+
+if(form.style.display === "block"){
+  form.style.display = "none";
+  select.style.display = "block";
+  return;
+}
+
+window.location.href = "home.html";
+
+}
+
+/* SUBMIT */
+function submitFinal(){
+
+alert("Report Submitted!");
+window.location.href = "home.html";
+
+}
+
+/* NAV */
+function goHome(){ window.location.href="home.html"; }
+function goRoutes(){ window.location.href="routes.html"; }
+function goCommunity(){ window.location.href="community.html"; }
+function goAccount(){ window.location.href="account.html"; }
+function goReport(){ window.location.href="report.html"; }
+
+</script>
 
 </body>
 </html>

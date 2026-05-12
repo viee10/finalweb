@@ -5,78 +5,147 @@
 <title>Community</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #f2f2f2;
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f2f2f2;
+  padding-bottom:100px;
 }
 
 /* HEADER */
-.header {
-  background: #2c00cc;
-  color: white;
-  padding: 15px;
-  font-size: 24px;
-  font-weight: bold;
+
+.header{
+  background:#2c00cc;
+  color:white;
+  padding:20px;
+  font-size:24px;
+  font-weight:bold;
 }
 
-/* CONTENT */
-.container {
-  padding: 20px;
+/* POST CARD */
+
+.post{
+  background:white;
+  margin:20px;
+  padding:20px;
+  border-radius:20px;
+  box-shadow:0 5px 10px rgba(0,0,0,0.2);
 }
 
-.title {
-  font-weight: bold;
-  font-size: 20px;
+/* USER */
+
+.user{
+  font-weight:bold;
+  color:#1800cc;
+  margin-bottom:10px;
 }
 
-.center {
-  text-align: center;
-  font-weight: bold;
-  margin: 20px 0;
+/* DESCRIPTION */
+
+.desc{
+  font-size:16px;
+  margin-bottom:15px;
 }
 
-/* POST */
-.post {
-  background: #eee;
-  padding: 15px;
-  border-radius: 15px;
-  margin-top: 15px;
+/* TIME */
+
+.time{
+  color:gray;
+  font-size:13px;
 }
 
-.user {
-  font-weight: bold;
+/* ACTIONS */
+
+.actions{
+  display:flex;
+  align-items:center;
+  margin-top:15px;
+  font-size:20px;
 }
 
-.actions {
-  margin-top: 10px;
-  display: flex;
-  justify-content: space-between;
+/* LIKE */
+.actions div:nth-child(1){
+  margin-right:25px;
 }
 
-/* NAV */
-.nav {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: rgb(255, 255, 255);
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 0;
+/* COMMENT */
+.actions div:nth-child(2){
+  margin-right:auto;
 }
 
-.nav-item {
-  text-align: center;
-  font-size: 12px;
+/* ALL BUTTONS */
+.actions div{
+  background:#f2f2f2;
+  padding:10px 15px;
+  border-radius:12px;
+  transition:0.2s;
+  cursor:pointer;
 }
 
-.report-btn {
-  background: red;
-  padding: 15px;
-  border-radius: 15px;
-  color: black;
-  font-weight: bold;
-  margin-top: -20px;
+/* VOUCH RIGHT */
+.actions div:last-child{
+  margin-left:auto;
+}
+
+.actions div:hover{
+  background:#ddd;
+}
+
+/* COMMENT AREA */
+
+.comment-area{
+  margin-top:15px;
+}
+
+.comment-input{
+  width:65%;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  background:#f2f2f2;
+}
+
+.comment-btn{
+  padding:10px 15px;
+  border:none;
+  border-radius:10px;
+  background:#1800cc;
+  color:white;
+  cursor:pointer;
+}
+
+.posted-comment{
+  margin-top:10px;
+  background:#f2f2f2;
+  padding:10px;
+  border-radius:10px;
+}
+
+/* NAVBAR */
+
+.nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:white;
+  display:flex;
+  justify-content:space-around;
+  padding:10px 0;
+}
+
+.nav-item{
+  text-align:center;
+  font-size:12px;
+}
+
+.report-btn{
+  background:red;
+  padding:15px;
+  border-radius:15px;
+  color:white;
+  font-weight:bold;
+  margin-top:-20px;
 }
 
 </style>
@@ -84,53 +153,363 @@ body {
 
 <body>
 
-<div class="header">COMMUNITY</div>
-
-<div class="container">
-
-  <div class="title">POST DETAIL</div>
-
-  <div class="center">
-    LAST REPORTED: “LARGA NA!” (3 MINS AGO)
-  </div>
-
-  <p>THREAD REPLIES</p>
-
-  <div class="post">
-    <div class="user">MariaS</div>
-    <p>arf</p>
-
-    <div class="actions">
-      👍 2 💬 3 ⭐ Vouch
-    </div>
-  </div>
-
-  <div class="post">
-    <div class="user">MariaS</div>
-    <p>meow</p>
-
-    <div class="actions">
-      👍 2 💬 3 ⭐ Vouch
-    </div>
-  </div>
-
+<div class="header">
+COMMUNITY REPORTS
 </div>
 
+<div id="communityPosts"></div>
+
 <!-- NAV -->
+
 <div class="nav">
   <div class="nav-item" onclick="goHome()">🏠<br>HOME</div>
   <div class="nav-item" onclick="goRoutes()">🗺️<br>ROUTES</div>
-  <div class="nav-item" onclick="goReport()">REPORT</div>
+  <div class="nav-item report-btn" onclick="goReport()">REPORT</div>
   <div class="nav-item" onclick="goCommunity()">🔔<br>COMMUNITY</div>
-  <div class="nav-item" onclick="goAccount()">👤ACCOUNT</div>
+  <div class="nav-item" onclick="goAccount()">👤<br>ACCOUNT</div>
 </div>
 
 <script>
- function goHome() { window.location.href = "home.html"; }
- function goRoutes() { window.location.href = "routes.html"; }
- function goReport() { window.location.href = "report.html"; }
- function goCommunity() { window.location.href = "community.html";}
- function goAccount() { window.location.href = "account.html";}
+
+const reports =
+JSON.parse(localStorage.getItem("reports")) || [];
+
+const container =
+document.getElementById("communityPosts");
+
+/* TIME FUNCTION */
+
+function getTimeAgo(time){
+
+const seconds =
+Math.floor((Date.now() - time) / 1000);
+
+const minutes =
+Math.floor(seconds / 60);
+
+const hours =
+Math.floor(minutes / 60);
+
+if(minutes < 1){
+  return "Just now";
+}
+
+if(minutes < 60){
+  return minutes + " mins ago";
+}
+
+return hours + " hrs ago";
+
+}
+
+/* SHOW POSTS */
+
+reports.forEach((report, index) => {
+
+let likes =
+parseInt(localStorage.getItem("likes" + index)) || 0;
+
+let comments =
+parseInt(localStorage.getItem("comments" + index)) || 0;
+
+let vouch =
+parseInt(localStorage.getItem("vouch" + index)) || 0;
+
+let savedComment =
+localStorage.getItem("commentText" + index) || "";
+
+container.innerHTML += `
+
+<div class="post">
+
+<div class="user">
+👤 ${report.reporter}
+</div>
+
+<div class="desc">
+${report.description}
+</div>
+
+<div class="time">
+${getTimeAgo(report.time)}
+</div>
+
+<div class="actions">
+
+<div onclick="likePost(${index})">
+❤️ <span id="like${index}">
+${likes}
+</span>
+</div>
+
+<div onclick="toggleCommentBox(${index})">
+💬 <span id="comment${index}">
+${comments}
+</span>
+</div>
+
+<div onclick="vouchPost(${index})">
+⭐ <span id="vouch${index}">
+${vouch}
+</span>
+</div>
+
+</div>
+
+<div class="comment-area"
+id="commentArea${index}"
+style="display:none;">
+
+<input
+type="text"
+id="commentInput${index}"
+placeholder="Write a comment..."
+class="comment-input">
+
+<button
+onclick="submitComment(${index})"
+class="comment-btn">
+
+POST
+
+</button>
+
+<div
+id="commentText${index}"
+class="posted-comment">
+
+${savedComment}
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+/* LIKE / UNLIKE */
+
+function likePost(index){
+
+let liked =
+localStorage.getItem("liked" + index);
+
+let likes =
+parseInt(localStorage.getItem("likes" + index)) || 0;
+
+if(liked === "true"){
+
+  likes--;
+
+  localStorage.setItem(
+  "liked" + index,
+  "false"
+  );
+
+}
+else{
+
+  likes++;
+
+  localStorage.setItem(
+  "liked" + index,
+  "true"
+  );
+
+}
+
+localStorage.setItem(
+"likes" + index,
+likes
+);
+
+document.getElementById(
+"like" + index
+).innerText = likes;
+
+}
+
+/* COMMENT BOX */
+
+function toggleCommentBox(index){
+
+const box =
+document.getElementById(
+"commentArea" + index
+);
+
+if(box.style.display === "none"){
+  box.style.display = "block";
+}
+else{
+  box.style.display = "none";
+}
+
+}
+
+/* SUBMIT COMMENT */
+
+function submitComment(index){
+
+const input =
+document.getElementById(
+"commentInput" + index
+);
+
+const text = input.value;
+
+if(text.trim() === ""){
+  return;
+}
+
+document.getElementById(
+"commentText" + index
+).innerHTML = `
+
+${text}
+
+<br><br>
+
+<button
+onclick="deleteComment(${index})"
+style="
+background:red;
+color:white;
+border:none;
+padding:5px 10px;
+border-radius:8px;
+cursor:pointer;
+">
+
+Delete
+
+</button>
+
+`;
+
+localStorage.setItem(
+"commentText" + index,
+text
+);
+
+localStorage.setItem(
+"comments" + index,
+1
+);
+
+document.getElementById(
+"comment" + index
+).innerText = 1;
+
+input.value = "";
+
+}
+
+/* DELETE COMMENT */
+
+function deleteComment(index){
+
+localStorage.removeItem(
+"commentText" + index
+);
+
+document.getElementById(
+"commentText" + index
+).innerHTML = "";
+
+localStorage.setItem(
+"comments" + index,
+0
+);
+
+document.getElementById(
+"comment" + index
+).innerText = 0;
+
+}
+
+/* VOUCH */
+
+/* VOUCH / UNVOUCH */
+
+function vouchPost(index){
+
+let vouched =
+localStorage.getItem("vouched" + index);
+
+let vouch =
+parseInt(localStorage.getItem("vouch" + index)) || 0;
+
+/* ACCOUNT STARS */
+let accountStars =
+parseInt(localStorage.getItem("accountStars")) || 3;
+
+if(vouched === "true"){
+
+  vouch--;
+
+  accountStars--;
+
+  localStorage.setItem(
+  "vouched" + index,
+  "false"
+  );
+
+}
+else{
+
+  vouch++;
+
+  accountStars++;
+
+  localStorage.setItem(
+  "vouched" + index,
+  "true"
+  );
+
+}
+
+localStorage.setItem(
+"vouch" + index,
+vouch
+);
+
+localStorage.setItem(
+"accountStars",
+accountStars
+);
+
+document.getElementById(
+"vouch" + index
+).innerText = vouch;
+
+}
+
+/* NAVIGATION */
+
+function goHome(){
+window.location.href = "home.html";
+}
+
+function goRoutes(){
+window.location.href = "routes.html";
+}
+
+function goCommunity(){
+window.location.href = "community.html";
+}
+
+function goAccount(){
+window.location.href = "account.html";
+}
+
+function goReport(){
+window.location.href = "report.html";
+}
+
 </script>
 
 </body>
