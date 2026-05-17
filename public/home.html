@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<!-- ✅ MOBILE FIX -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Home</title>
+
+<style>
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f2f2f2;
+  padding-bottom:120px;
+}
+
+/* HEADER */
+.header{
+  background:#2c00cc;
+  color:white;
+  padding:20px;
+  font-size:22px;
+  font-weight:bold;
+}
+
+/* SEARCH */
+.search-box{
+  margin:20px;
+  background:#ddd;
+  padding:15px;
+  border-radius:10px;
+}
+
+/* CARD */
+.card{
+  background:#e6e6e6;
+  margin:20px;
+  padding:20px;
+  border-radius:20px;
+  box-shadow:0 5px 10px rgba(0,0,0,0.2);
+}
+
+/* STATUS */
+.status-row{
+  display:flex;
+  gap:20px;
+  align-items:center;
+}
+
+.status-dot{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+}
+
+/* BUTTON */
+.view-btn{
+  width:100%;
+  padding:15px;
+  border:none;
+  border-radius:15px;
+  background:#1800cc;
+  color:white;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+  margin-top:15px;
+}
+
+/* DETAILS */
+.details-box{
+  display:none;
+  margin-top:15px;
+  background:#1800cc;
+  color:white;
+  padding:20px;
+  border-radius:20px;
+}
+
+/* NAVBAR */
+.nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:white;
+  display:flex;
+  justify-content:space-around;
+  padding:10px 0;
+}
+
+.nav-item{
+  text-align:center;
+  font-size:12px;
+}
+
+.report-btn{
+  background:red;
+  padding:15px;
+  border-radius:15px;
+  color:rgb(5, 5, 5);
+  font-weight:bold;
+  margin-top:-20px;
+}
+
+/* ROUTE */
+.route-container{
+  position:relative;
+  display:flex;
+  justify-content:space-between;
+  margin-top:30px;
+}
+
+/* LINE */
+.line{
+  position:absolute;
+  top:18px;
+  left:0;
+  width:100%;
+  height:4px;
+  background:white;
+  z-index:1;
+}
+
+/* STOP */
+.stop{
+  position:relative;
+  z-index:2;
+  width:25%;
+  text-align:center;
+  color:white;
+  font-size:12px;
+}
+
+/* DOT */
+.circle{
+  width:35px;
+  height:35px;
+  background:white;
+  border-radius:50%;
+  margin:0 auto 5px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  font-size:18px;
+}
+
+/* ACTIVE */
+.stop.active .circle{
+  background:yellow;
+}
+
+.last-report{
+  margin-top:10px;
+  color:#444;
+  font-size:14px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  MUNICIPALITY OF GUAGUA
+</div>
+
+<!-- ✅ SEARCH BAR (WORKING) -->
+<div class="search-box">
+  <input
+    id="searchInput"
+    type="text"
+    placeholder="🔍 Search Terminal / Destination..."
+    style="
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:10px;
+      font-size:16px;
+      outline:none;
+    "
+    oninput="searchRoutes()"
+  >
+</div>
+
+<!-- REPORTS -->
+<div id="reportContainer"></div>
+
+<!-- NAV -->
+<div class="nav">
+  <div class="nav-item" onclick="goHome()">🏠<br>HOME</div>
+  <div class="nav-item" onclick="goRoutes()">🗺️<br>ROUTES</div>
+  <div class="nav-item report-btn" onclick="goReport()">REPORT</div>
+  <div class="nav-item" onclick="goCommunity()">🔔<br>COMMUNITY</div>
+  <div class="nav-item" onclick="goAccount()">👤<br>ACCOUNT</div>
+</div>
+
+<script>
+
+const reports = JSON.parse(localStorage.getItem("reports")) || [];
+const container = document.getElementById("reportContainer");
+
+reports.forEach(report => {
+
+let color = "gold";
+if(report.status === "SUPER PUNO") color = "red";
+if(report.status === "EMPTY - LARGA") color = "green";
+if(report.status === "NO JEEPS") color = "gray";
+
+container.innerHTML += `
+<div class="card">
+
+<p><b>ROUTE:</b> ${report.area}</p>
+
+<div class="status-row">
+  <div class="status-dot" style="background:${color};"></div>
+  <div>
+    <h2>${report.status}</h2>
+    <p>Estimated Wait: <b>~12 mins</b></p>
+  </div>
+</div>
+
+<p>${report.description}</p>
+
+<p class="last-report">
+<b>Last Report:</b> "${report.status}"<br>
+(${getTimeAgo(report.time)})<br>
+by ${report.reporter}
+</p>
+
+<p><b>${report.fareType}</b> : ₱${report.fare}</p>
+
+<button class="view-btn" onclick="toggleDetails(this)">
+VIEW DETAILS ▲
+</button>
+
+<div class="details-box">
+
+<h3>UPCOMING VEHICLE LOCATION</h3>
+
+<div class="route-container">
+<div class="line"></div>
+
+<div class="stop active">
+  <div class="circle">🚗</div>
+  <span>Terminal</span>
+</div>
+
+<div class="stop">
+  <div class="circle"></div>
+  <span>Guagua</span>
+  <small>12 mins</small>
+</div>
+
+<div class="stop">
+  <div class="circle"></div>
+  <span>San Nicolas</span>
+  <small>6 mins</small>
+</div>
+
+<div class="stop">
+  <div class="circle"></div>
+  <span>Sta. Rita</span>
+</div>
+
+</div>
+
+</div>
+
+</div>
+`;
+});
+
+/* TOGGLE DETAILS */
+function toggleDetails(button){
+  const details = button.nextElementSibling;
+
+  if(details.style.display === "block"){
+    details.style.display = "none";
+  } else {
+    details.style.display = "block";
+    startTracker(details);
+  }
+}
+
+/* TRACKER */
+function startTracker(details){
+  const stops = details.querySelectorAll(".stop");
+  let index = 0;
+
+  stops.forEach(stop => {
+    stop.classList.remove("active");
+    stop.querySelector(".circle").innerHTML = "";
+  });
+
+  stops[0].classList.add("active");
+  stops[0].querySelector(".circle").innerHTML = "🚗";
+
+  setInterval(() => {
+    stops.forEach(stop => {
+      stop.classList.remove("active");
+      stop.querySelector(".circle").innerHTML = "";
+    });
+
+    index++;
+    if(index >= stops.length) index = 0;
+
+    stops[index].classList.add("active");
+    stops[index].querySelector(".circle").innerHTML = "🚗";
+  }, 3000);
+}
+
+/* ✅ SEARCH FUNCTION */
+function searchRoutes(){
+
+const value = document.getElementById("searchInput").value.toLowerCase();
+const cards = document.querySelectorAll(".card");
+
+cards.forEach(card => {
+
+const text = card.innerText.toLowerCase();
+
+if(text.includes(value)){
+  card.style.display = "block";
+}else{
+  card.style.display = "none";
+}
+
+});
+
+}
+
+/* NAV */
+function goHome(){ window.location.href = "home.html"; }
+function goRoutes(){ window.location.href = "routes.html"; }
+function goCommunity(){ window.location.href = "community.html"; }
+function goAccount(){ window.location.href = "account.html"; }
+function goReport(){ window.location.href = "report.html"; }
+
+function getTimeAgo(time){
+
+const seconds = Math.floor((Date.now() - time) / 1000);
+const minutes = Math.floor(seconds / 60);
+const hours = Math.floor(minutes / 60);
+
+if(minutes < 1) return "Just now";
+if(minutes < 60) return minutes + " mins ago";
+return hours + " hrs ago";
+
+}
+
+</script>
+
+</body>
+</html>

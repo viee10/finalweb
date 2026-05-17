@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Report</title>
+
+<style>
+
+/* ===== BASE UI (UNCHANGED) ===== */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+}
+
+.header {
+  background: #2c00cc;
+  color: white;
+  padding: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  position: relative;
+  display:flex;
+  align-items:center;
+}
+
+.back-arrow{
+  position:absolute;
+  left:15px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:28px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.title-text{
+  margin-left:50px;
+  font-size:24px;
+  font-weight:bold;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  padding: 20px;
+}
+
+.box {
+  height: 150px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 22px;
+  box-shadow: 0 6px 10px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+
+.box small {
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.green { background: #10b35a; color: white; }
+.yellow { background: #f4c400; }
+.red { background: #ff2d2d; color: white; }
+.gray { background: #ddd; }
+
+.selected {
+  outline: 4px solid #2c00cc;
+}
+
+.btn {
+  width: 90%;
+  margin: 20px auto;
+  display: block;
+  padding: 15px;
+  background: #1800cc;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 18px;
+}
+
+.cancel {
+  text-align: center;
+  color: red;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: rgb(250, 250, 250);
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+}
+
+.nav-item {
+  text-align: center;
+  font-size: 12px;
+}
+
+.report-btn {
+  background: red;
+  padding: 15px;
+  border-radius: 15px;
+  color: black;
+  font-weight: bold;
+  margin-top: -20px;
+}
+
+/* ===== FIX UI STABILITY ===== */
+
+#area, #fare {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  outline: none;
+}
+
+#description {
+  width: 100%;
+  height: 100px;
+  box-sizing: border-box;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  resize: none;
+  outline: none;
+}
+
+/* ===== JEEPNEY FARE ===== */
+
+.fare-box{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-top:10px;
+}
+
+.fare-box select,
+.fare-box input{
+  padding:15px;
+  border:none;
+  border-radius:10px;
+  font-size:18px;
+  width:100%;
+  height:50px;
+  box-sizing:border-box;
+}
+
+.submit-btn{
+  width:100%;
+  padding:15px;
+  margin-top:20px;
+  background:#1800cc;
+  color:white;
+  border:none;
+  border-radius:20px;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.cancel-btn-container{
+  display:flex;
+  justify-content:center;
+  margin-top:15px;
+}
+
+.cancel-btn{
+  color:red;
+  font-weight:bold;
+  cursor:pointer;
+  font-size:18px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <div class="back-arrow" onclick="goBack()">←</div>
+  <div class="title-text">REPORT</div>
+</div>
+
+<div id="selectScreen">
+
+  <div class="grid">
+
+    <div class="box green" onclick="selectBox(this,'EMPTY - LARGA')">
+      EMPTY - LARGA
+      <small>Plenty of Jeeps</small>
+    </div>
+
+    <div class="box yellow" onclick="selectBox(this,'MODERATE')">
+      MODERATE
+      <small>Wait < 10 mins</small>
+    </div>
+
+    <div class="box red" onclick="selectBox(this,'SUPER PUNO')">
+      SUPER PUNO
+      <small>Wait > 20 mins</small>
+    </div>
+
+    <div class="box gray" onclick="selectBox(this,'NO JEEPS')">
+      NO JEEPS
+      <small>Wala pa</small>
+    </div>
+
+  </div>
+
+  <button class="btn" onclick="goNext()">NEXT</button>
+
+  <div class="cancel" onclick="goHome()">< CANCEL ></div>
+
+</div>
+
+<div id="formScreen" style="display:none; padding:20px;">
+
+  <h2>MAP MARKET PLACEMENT</h2>
+  <input id="area" placeholder="Map marker Area....">
+
+  <h2>TEXT DESCRIPTION</h2>
+  <textarea id="description"></textarea>
+
+  <h2>JEEPNEY FARE</h2>
+
+  <div class="fare-box">
+
+    <select id="fareType">
+      <option>Standard Fare</option>
+      <option>Student Fare</option>
+      <option>Senior Citizen Fare</option>
+    </select>
+
+    <input id="fare" placeholder="₱ Fare">
+
+  </div>
+
+  <button class="submit-btn" onclick="submitFinal()">
+    SUBMIT REPORT
+  </button>
+
+  <div class="cancel-btn-container">
+    <p class="cancel-btn" onclick="goBack()">< CANCEL ></p>
+  </div>
+
+</div>
+
+<div class="nav">
+
+  <div class="nav-item" onclick="goHome()">🏠<br>HOME</div>
+  <div class="nav-item" onclick="goRoutes()">🗺️<br>ROUTES</div>
+  <div class="nav-item report-btn" onclick="goReport()">REPORT</div>
+  <div class="nav-item" onclick="goCommunity()">🔔<br>COMMUNITY</div>
+  <div class="nav-item" onclick="goAccount()">👤<br>ACCOUNT</div>
+
+</div>
+
+<script>
+
+/* backend URL (stable) */
+const API = "http://127.0.0.1:3000";
+
+let selectedReport = "";
+
+function selectBox(el,value){
+  document.querySelectorAll(".box").forEach(b=>b.classList.remove("selected"));
+  el.classList.add("selected");
+  selectedReport = value;
+}
+
+function goNext(){
+  if(!selectedReport) return alert("Select first");
+  document.getElementById("selectScreen").style.display="none";
+  document.getElementById("formScreen").style.display="block";
+}
+
+function goBack(){
+  const form = document.getElementById("formScreen");
+  const select = document.getElementById("selectScreen");
+
+  if(form.style.display==="block"){
+    form.style.display="none";
+    select.style.display="block";
+    return;
+  }
+
+  window.location.href="home.html";
+}
+
+async function submitFinal(){
+
+const reportData = {
+  reportType: selectedReport,
+  area: document.getElementById("area").value,
+  description: document.getElementById("description").value,
+  fareType: document.getElementById("fareType").value,
+  fare: document.getElementById("fare").value,
+  reporter: "user",
+  time: Date.now(),
+  likes: 0,
+  vouches: 0,
+  comments: []
+};
+
+try {
+
+  const res = await fetch(API + "/report", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(reportData)
+  });
+
+  /* 🔥 SAFE CHECK (no JSON crash anymore) */
+  const contentType = res.headers.get("content-type");
+
+  let data;
+
+  if (contentType && contentType.includes("application/json")) {
+    data = await res.json();
+  } else {
+    throw new Error("Backend did not return JSON (server error)");
+  }
+
+  if (data.success) {
+
+    let old = JSON.parse(localStorage.getItem("reports")) || [];
+    old.unshift(reportData);
+    localStorage.setItem("reports", JSON.stringify(old));
+
+    alert("Report Submitted!");
+    window.location.href = "home.html";
+
+  } else {
+    alert("Failed to submit report");
+  }
+
+} catch (err) {
+  console.log("SUBMIT ERROR:", err);
+  alert("Cannot connect to server");
+}
+
+}
+
+/* NAV */
+function goHome(){ window.location.href="home.html"; }
+function goRoutes(){ window.location.href="routes.html"; }
+function goCommunity(){ window.location.href="community.html"; }
+function goAccount(){ window.location.href="account.html"; }
+function goReport(){ window.location.href="report.html"; }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Login / Register</title>
+
+<style>
+
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:Arial,sans-serif;
+  background:#f2f2f2;
+}
+
+.container{
+  width:320px;
+  padding:30px;
+  background:white;
+  border-radius:20px;
+  box-shadow:0 0 15px rgba(0,0,0,0.1);
+  text-align:center;
+}
+
+.logo{
+  width:130px;
+  margin-bottom:20px;
+}
+
+h2{
+  margin-bottom:30px;
+  color:black;
+}
+
+.input-box{
+  width:85%;
+  margin:10px auto;
+  padding:15px;
+  border:none;
+  border-radius:10px;
+  box-shadow:0 4px 6px rgba(0,0,0,0.2);
+  font-size:16px;
+  outline:none;
+}
+
+.submit-btn,
+.register-btn{
+  width:85%;
+  padding:15px;
+  margin-top:10px;
+  background:#ff2d2d;
+  border:none;
+  border-radius:25px;
+  color:white;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.submit-btn:hover,
+.register-btn:hover{
+  background:#d90000;
+}
+
+.forgot{
+  color:#ff2d2d;
+  text-decoration:none;
+  display:block;
+  margin:15px 0;
+  font-size:14px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<img src="images/logo(1).jpg" class="logo" alt="Logo">
+
+<h2>USER LOG IN / SIGN UP</h2>
+
+<input type="email" id="email" class="input-box" placeholder="EMAIL">
+<input type="password" id="password" class="input-box" placeholder="PASSWORD">
+
+<a href="reset.html" class="forgot">FORGOT YOUR PASSWORD?</a>
+
+<button class="submit-btn" onclick="login()">SUBMIT</button>
+<button class="register-btn" onclick="register()">REGISTER</button>
+
+</div>
+
+<script>
+
+const BASE_URL = "http://127.0.0.1:3000";
+
+/* LOGIN */
+async function login() {
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+
+    const res = await fetch(`${BASE_URL}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    alert(data.message);
+
+    if (data.success) {
+      localStorage.setItem("user", email);
+      window.location.href = "welcome.html";
+    }
+
+  } catch (err) {
+    console.log(err);
+    alert("Cannot connect to server");
+  }
+}
+
+/* REGISTER */
+async function register() {
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  if (!email || !password) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  try {
+
+    const res = await fetch(`${BASE_URL}/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    alert(data.message);
+
+  } catch (err) {
+    console.log(err);
+    alert("Cannot connect to server");
+  }
+}
+
+</script>
+
+</body>
+</html>

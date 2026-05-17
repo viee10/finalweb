@@ -1,183 +1,141 @@
-console.log("SERVER LOADED - CHECKING ROUTES");
-console.log("RUNNING FILE:", __filename);
-console.log("SERVER FILE LOADED");
-
+console.log("🔥 SERVER STARTING");
 
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+const path = require("path");
+const bcrypt = require("bcrypt");
 
 const app = express();
 
-app.use(cors());
+/* =========================
+   MIDDLEWARE
+========================= */
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type"]
+}));
+
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "../public")));
 
-// CONNECT TO MONGODB
-mongoose.connect("mongodb://127.0.0.1:27017/loginSystem")
-  .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
-
-// USER SCHEMA
-const userSchema = new mongoose.Schema({
-  email: String,
-  password: String,
-
-  savedRoutes: [
-    {
-      title: String,
-      location: String,
-      createdAt: {
-        type: Date,
-        default: Date.now
-      }
-    }
-  ]
+/* =========================
+   REQUEST LOGGER
+========================= */
+app.use((req, res, next) => {
+  console.log("REQUEST:", req.method, req.url);
+  next();
 });
 
-const User = mongoose.model("User", userSchema);
+/* =========================
+   DATABASE
+========================= */
+mongoose.connect("mongodb://127.0.0.1:27017/loginSystem")
+  .then(() => console.log("MongoDB OK"))
+  .catch(err => console.log("MongoDB ERROR:", err));
 
+/* =========================
+   MODELS
+========================= */
+const User = mongoose.model("User", new mongoose.Schema({
+  email: String,
+  password: String
+}));
 
-// ================= REGISTER =================
+const Report = mongoose.model("Report", new mongoose.Schema({
+  reporter: String,
+  area: String,
+  description: String,
+  reportType: String,
+  fareType: String,
+  fare: String,
+  time: Number,
+  likes: { type: Number, default: 0 },
+  vouches: { type: Number, default: 0 },
+  comments: [{
+    _id: { type: mongoose.Schema.Types.ObjectId, default: () => new mongoose.Types.ObjectId() },
+    text: String
+  }]
+}));
+
+/* =========================
+   REGISTER (HASH PASSWORD)
+========================= */
 app.post("/register", async (req, res) => {
   try {
+    const email = req.body.email?.trim();
+    const password = req.body.password?.trim();
 
-    const { email, password } = req.body;
-
-    const existingUser = await User.findOne({ email });
-
-    if (existingUser) {
-      return res.json({
-        success: false,
-        message: "Email already registered"
-      });
+    if (!email || !password) {
+      return res.json({ success: false, message: "Missing fields" });
     }
 
-    const hashed = await bcrypt.hash(password, 10);
+    const exists = await User.findOne({ email });
 
-    const user = new User({
+    if (exists) {
+      return res.json({ success: false, message: "Email already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await new User({
       email,
-      password: hashed
-    });
+      password: hashedPassword
+    }).save();
 
-    await user.save();
-
-    res.json({ success: true });
+    res.json({ success: true, message: "Registered successfully" });
 
   } catch (err) {
-    console.error(err);
-
-    res.status(500).json({
-      success: false
-    });
+    console.log(err);
+    res.json({ success: false, message: "Register failed" });
   }
 });
 
-
-// ================= LOGIN =================
+/* =========================
+   LOGIN (COMPARE PASSWORD)
+========================= */
 app.post("/login", async (req, res) => {
-
   try {
+    const email = req.body.email?.trim();
+    const password = req.body.password?.trim();
 
-    const { email, password } = req.body;
+    console.log("LOGIN ATTEMPT:", email);
+
+    if (!email || !password) {
+      return res.json({ success: false, message: "Missing fields" });
+    }
 
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.json({ success: false });
+      return res.json({ success: false, message: "User not found" });
     }
 
-    const isMatch = await bcrypt.compare(
-      password,
-      user.password
-    );
+    const isMatch = await bcrypt.compare(password, user.password);
 
-    if (isMatch) {
-      return res.json({ success: true });
+    if (!isMatch) {
+      return res.json({ success: false, message: "Wrong password" });
     }
 
-    res.json({ success: false });
+    res.json({ success: true, message: "Login successful" });
 
   } catch (err) {
-
-    console.error(err);
-
-    res.status(500).json({
-      success: false
-    });
+    console.log(err);
+    res.json({ success: false, message: "Login error" });
   }
 });
 
-
-// ================= RESET PASSWORD =================
-
-
-
-
-// ================= TEST =================
-app.get("/route-check", (req, res) => {
-  console.log("ROUTE CHECK HIT");
-  res.json({
-    routes: [
-      "/register",
-      "/login",
-      "/reset",
-      "/test"
-    ]
-  });
+/* =========================
+   TEST ROUTE
+========================= */
+app.get("/test", (req, res) => {
+  res.send("TEST OK WORKING");
 });
 
-// ================= RESET PASSWORD =================
-app.post("/reset", async (req, res) => {
-  try {
-    console.log("🔥 RESET ROUTE HIT");
-
-    const { email, newPassword } = req.body;
-
-    // CHECK INPUTS
-    if (!email || !newPassword) {
-      return res.status(400).json({
-        success: false,
-        message: "Missing fields"
-      });
-    }
-
-    // FIND USER
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "Email not found"
-      });
-    }
-
-    // HASH NEW PASSWORD
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-    // UPDATE PASSWORD
-    user.password = hashedPassword;
-
-    await user.save();
-
-    return res.json({
-      success: true,
-      message: "Password updated"
-    });
-
-  } catch (err) {
-    console.error("RESET ERROR:", err);
-
-    return res.status(500).json({
-      success: false,
-      message: "Server error"
-    });
-  }
-});
-
-
-
-// ================= START SERVER =================
+/* =========================
+   START SERVER
+========================= */
 app.listen(3000, () => {
-  console.log("Server running on http://127.0.0.1:3000");
+  console.log("http://127.0.0.1:3000");
 });

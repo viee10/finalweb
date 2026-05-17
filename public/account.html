@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account Page</title>
+
+<style>
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f2f2f2;
+  padding-bottom:100px;
+}
+
+/* HEADER */
+.header{
+  background:#2c00cc;
+  color:white;
+  padding:18px;
+  font-size:28px;
+  font-weight:bold;
+  text-align:center;
+}
+
+/* PROFILE */
+.profile-card{
+  display:flex;
+  align-items:center;
+  padding:15px;
+}
+
+.profile-left img{
+  width:75px;
+  height:75px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid black;
+  cursor:pointer;
+}
+
+.profile-info{
+  margin-left:12px;
+}
+
+.profile-info h2{
+  margin:0;
+  font-size:26px;
+}
+
+.stars{
+  color:#777;
+  margin-top:4px;
+  font-size:14px;
+}
+
+/* SECTION */
+.section{
+  padding:15px;
+}
+
+.section h3{
+  border-bottom:2px solid #bbb;
+  padding-bottom:8px;
+  font-size:18px;
+}
+
+/* DASHBOARD */
+.stats{
+  display:flex;
+  justify-content:space-between;
+  margin:10px 0;
+  font-size:16px;
+}
+
+/* BUTTONS */
+.menu-btn{
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  border:none;
+  border-radius:12px;
+  background:white;
+  font-size:16px;
+  text-align:left;
+  box-shadow:0 3px 8px rgba(0,0,0,0.2);
+  cursor:pointer;
+}
+
+.menu-btn:hover{
+  background:#eee;
+}
+
+/* LOGOUT */
+.logout{
+  color:red;
+  text-align:center;
+  font-weight:bold;
+  cursor:pointer;
+  margin-top:25px;
+}
+
+/* NAVBAR */
+.nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:white;
+  display:flex;
+  justify-content:space-around;
+  padding:8px 0;
+}
+
+.nav-item{
+  text-align:center;
+  font-size:11px;
+  cursor:pointer;
+}
+
+.report-btn{
+  background:red;
+  padding:12px;
+  border-radius:12px;
+  color:black;
+  font-weight:bold;
+  margin-top:-15px;
+  font-size:12px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+ACCOUNT
+</div>
+
+<div class="profile-card">
+
+  <div class="profile-left">
+
+    <img id="profilePic"
+    src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+
+    <input type="file" id="uploadPic" accept="image/*" hidden>
+
+  </div>
+
+  <div class="profile-info">
+
+    <h2 id="displayName">@MariaS</h2>
+
+    <div class="stars">
+  ⭐ <span id="starCount">0</span>-Star Contributor
+</div>
+
+  </div>
+
+</div>
+
+
+<div class="section">
+
+<h3>Security</h3>
+
+<button class="menu-btn" onclick="openSavedRoutesPage()">🔖 Saved Routes</button>
+<button class="menu-btn" onclick="changeName()">👤 Change Name</button>
+<button class="menu-btn" onclick="changePassword()">🔒 Change Password</button>
+<button class="menu-btn" onclick="changePhoto()">📷 Change Profile Picture</button>
+
+</div>
+
+<p class="logout" onclick="logout()">
+&lt; LOG OUT &gt;
+</p>
+
+<div class="nav">
+
+  <div class="nav-item" onclick="goHome()">🏠<br>HOME</div>
+  <div class="nav-item" onclick="goRoutes()">🗺️<br>ROUTES</div>
+  <div class="nav-item report-btn" onclick="goReport()">REPORT</div>
+  <div class="nav-item" onclick="goCommunity()">🔔<br>COMMUNITY</div>
+  <div class="nav-item" onclick="goAccount()">👤<br>ACCOUNT</div>
+
+</div>
+
+<script>
+
+/* LOAD NAME */
+const savedName = localStorage.getItem("profileName");
+if(savedName){
+document.getElementById("displayName").innerText = savedName;
+}
+
+/* LOAD PHOTO */
+const savedPhoto = localStorage.getItem("profilePhoto");
+if(savedPhoto){
+document.getElementById("profilePic").src = savedPhoto;
+}
+
+
+/* LOAD STARS */
+let accountStars =
+parseInt(localStorage.getItem("accountStars")) || 0;
+
+document.getElementById("starCount").innerText =
+accountStars;
+
+/* ADD STAR */
+function addStar(){
+
+  accountStars++;
+
+  localStorage.setItem("accountStars", accountStars);
+
+  document.getElementById("starCount").innerText = accountStars;
+}
+
+/* CHANGE NAME */
+function changeName(){
+const newName = prompt("Enter new name:");
+if(newName && newName.trim() !== ""){
+localStorage.setItem("profileName", newName);
+document.getElementById("displayName").innerText = newName;
+}
+}
+
+/* CHANGE PHOTO */
+function changePhoto(){
+document.getElementById("uploadPic").click();
+}
+
+document.getElementById("uploadPic").addEventListener("change", function(event){
+const file = event.target.files[0];
+if(file){
+const reader = new FileReader();
+reader.onload = function(e){
+document.getElementById("profilePic").src = e.target.result;
+localStorage.setItem("profilePhoto", e.target.result);
+};
+reader.readAsDataURL(file);
+}
+});
+
+/* PASSWORD */
+function changePassword(){
+window.location.href = "reset.html";
+}
+
+/* LOGOUT */
+function logout(){
+localStorage.removeItem("user");
+window.location.href = "finalweb.html";
+}
+
+/* NAV */
+function goHome(){ window.location.href="home.html"; }
+function goRoutes(){ window.location.href="routes.html"; }
+function goCommunity(){ window.location.href="community.html"; }
+function goReport(){ window.location.href="report.html"; }
+function goAccount(){ window.location.href="account.html"; }
+
+function openSavedRoutesPage(){
+window.location.href="savedroutes.html";
+}
+
+</script>
+
+</body>
+</html>

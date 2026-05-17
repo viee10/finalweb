@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f2f2f2;
+  padding-bottom:100px;
+}
+
+.header{
+  background:#2c00cc;
+  color:white;
+  padding:20px;
+  font-size:24px;
+  font-weight:bold;
+}
+
+.post{
+  background:white;
+  margin:20px;
+  padding:20px;
+  border-radius:20px;
+}
+
+.user{ font-weight:bold; color:#1800cc; }
+.desc{ margin:10px 0; }
+.time{ color:gray; font-size:12px; }
+
+.actions{
+  display:flex;
+  gap:15px;
+  margin-top:10px;
+}
+
+.actions div{
+  background:#f2f2f2;
+  padding:10px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.comment-area{ margin-top:10px; }
+
+.comment-input{
+  width:70%;
+  padding:8px;
+}
+
+.comment-btn{
+  padding:8px 12px;
+  background:#1800cc;
+  color:white;
+  border:none;
+}
+
+.single-comment{
+  background:#eee;
+  padding:8px;
+  margin-top:5px;
+  border-radius:8px;
+}
+
+.nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  display:flex;
+  justify-content:space-around;
+  background:white;
+  padding:10px;
+}
+
+.report-btn{
+  background:red;
+  padding:12px;
+  border-radius:12px;
+  color:black;
+  font-weight:bold;
+  margin-top:-15px;
+  font-size:12px;
+}
+
+.nav-item{
+  text-align:center;
+  font-size:12px;
+  line-height:1.4;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">COMMUNITY REPORTS</div>
+
+<div id="communityPosts"></div>
+
+<div class="nav">
+
+  <div class="nav-item" onclick="goHome()">🏠<br>HOME</div>
+  <div class="nav-item" onclick="goRoutes()">🗺️<br>ROUTES</div>
+  <div class="nav-item report-btn" onclick="goReport()">REPORT</div>
+ <div class="nav-item" onclick="goCommunity()">🔔<br>COMMUNITY</div>
+  <div class="nav-item" onclick="goAccount()">👤<br>ACCOUNT</div>
+
+</div>
+
+
+<script>
+
+const API = "http://localhost:3000";
+const container = document.getElementById("communityPosts");
+
+/* LOAD POSTS */
+async function loadReports(){
+  const res = await fetch(API + "/reports");
+  const reports = await res.json();
+
+  container.innerHTML = "";
+
+  reports.forEach(report => {
+
+    const comments = report.comments || [];
+
+    container.innerHTML += `
+    <div class="post">
+
+      <div class="user">👤 ${report.reporter || "@user"}</div>
+      <div class="desc">${report.description || ""}</div>
+      <div class="time">${getTimeAgo(report.time)}</div>
+
+      <div class="actions">
+
+        <div onclick="likePost('${report._id}')">
+          ❤️ <span id="like${report._id}">${report.likes || 0}</span>
+        </div>
+
+        <div onclick="toggleCommentBox('${report._id}')">
+          💬 ${comments.length}
+        </div>
+
+        <div onclick="vouchPost('${report._id}')">
+          ⭐ <span id="vouch${report._id}">${report.vouches || 0}</span>
+        </div>
+
+      </div>
+
+      <div class="comment-area" id="commentArea${report._id}" style="display:none;">
+
+        <input id="commentInput${report._id}" class="comment-input">
+        <button class="comment-btn" onclick="submitComment('${report._id}')">POST</button>
+
+        <div>
+
+          ${comments.map((c, index) => `
+            <div class="single-comment">
+              💬 ${c.text}
+              <button
+               onclick="deleteComment('${report._id}', ${index})"
+                style="
+                background:red;
+                color:black;
+                border:none;
+                 border-radius:6px;
+                padding:5px 8px;
+                cursor:pointer;
+                margin-left:8px;
+                 font-size:14px;
+                  ">
+                 🗑️
+                 </button>
+            </div>
+          `).join("")}
+
+        </div>
+
+      </div>
+
+    </div>
+    `;
+  });
+}
+
+/* TIME */
+function getTimeAgo(time){
+  if(!time) return "Just now";
+
+  const min = Math.floor((Date.now() - time)/60000);
+  if(min < 1) return "Just now";
+  if(min < 60) return min + " mins ago";
+  return Math.floor(min/60) + " hrs ago";
+}
+
+/* TOGGLE COMMENT */
+function toggleCommentBox(id){
+  const box = document.getElementById("commentArea" + id);
+  box.style.display = box.style.display === "block" ? "none" : "block";
+}
+
+/* ADD COMMENT */
+async function submitComment(id){
+  const input = document.getElementById("commentInput" + id);
+
+  if(!input.value.trim()) return;
+
+  await fetch(API + "/comment/" + id, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text: input.value })
+  });
+
+  input.value = "";
+  loadReports();
+}
+
+/* DELETE COMMENT (FIXED) */
+async function deleteComment(reportId, index){
+
+  await fetch(API + "/delete-comment/" + reportId, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ index })
+  });
+
+  loadReports();
+}
+
+/* LIKE */
+async function likePost(id){
+
+  const res = await fetch(API + "/like/" + id, { method: "POST" });
+  const data = await res.json();
+
+  const el = document.getElementById("like" + id);
+  el.innerText = data.likes;
+}
+
+/* VOUCH */
+async function vouchPost(id){
+
+  const key = "vouched_" + id;
+
+  let accountStars = parseInt(localStorage.getItem("accountStars")) || 0;
+
+  let isVouched = localStorage.getItem(key) === "1";
+
+  if(isVouched){
+    // TURN OFF
+    localStorage.removeItem(key);
+    accountStars = accountStars - 1;
+  } else {
+    // TURN ON
+    localStorage.setItem(key, "1");
+    accountStars = accountStars + 1;
+  }
+
+  if(accountStars < 0) accountStars = 0;
+
+  localStorage.setItem("accountStars", accountStars);
+
+  // refresh UI from backend
+  const res = await fetch(API + "/vouch/" + id, { method: "POST" });
+  const data = await res.json();
+
+  document.getElementById("vouch" + id).innerText = data.vouches;
+
+  // update account live (if open)
+  const starEl = document.getElementById("starCount");
+  if(starEl){
+    starEl.innerText = accountStars;
+  }
+}
+/* NAV */
+function goHome(){ location.href="home.html"; }
+function goRoutes(){ location.href="routes.html"; }
+function goReport(){ location.href="report.html"; }
+function goCommunity(){ location.href="community.html"; }
+function goAccount(){ location.href="account.html"; }
+
+loadReports();
+
+</script>
+</body>
+</html>

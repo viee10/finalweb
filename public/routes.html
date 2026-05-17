@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<!-- MOBILE FIX -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Routes</title>
+
+<style>
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f2f2f2;
+  padding-bottom:140px;
+}
+
+/* HEADER */
+.header{
+  background:#2c00cc;
+  color:white;
+  padding:15px;
+  font-size:22px;
+  font-weight:bold;
+}
+
+/* TITLE */
+.title{
+  padding:15px;
+  font-size:20px;
+  font-weight:bold;
+}
+
+/* ROUTES GRID */
+.routes-container{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  padding:15px;
+}
+
+/* CARD */
+.card{
+  background:#e6e6e6;
+  padding:15px;
+  border-radius:20px;
+  box-shadow:0 6px 10px rgba(0,0,0,0.2);
+}
+
+/* MAP */
+.map{
+  height:130px;
+  border-radius:15px;
+  overflow:hidden;
+  margin-bottom:10px;
+  background:#ccc;
+}
+
+.map img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  cursor:pointer;
+}
+
+/* POPUP FIXED FOR MOBILE */
+.popup{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.85);
+  justify-content:center;
+  align-items:center;
+  z-index:2000;
+}
+
+.popup img{
+  width:95%;
+  max-height:95%;
+  object-fit:contain;
+  border-radius:15px;
+}
+
+/* STATUS */
+.dot-red{ color:red; }
+.dot-green{ color:green; }
+
+/* BUTTON */
+.save-btn{
+  width:100%;
+  margin-top:12px;
+  padding:10px;
+  border:none;
+  border-radius:12px;
+  background:#1800cc;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.save-btn:hover{
+  opacity:0.9;
+}
+
+/* TABLE */
+.big-card{
+  grid-column:1 / span 2;
+  background:#e6e6e6;
+  padding:15px;
+  border-radius:20px;
+  box-shadow:0 6px 10px rgba(0,0,0,0.2);
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+
+th, td{
+  border:1px solid #999;
+  padding:8px;
+  text-align:center;
+}
+
+/* BUTTON */
+.btn{
+  width:100%;
+  margin-top:15px;
+  padding:15px;
+  background:#2c00cc;
+  color:white;
+  border:none;
+  border-radius:20px;
+  font-size:18px;
+  cursor:pointer;
+}
+
+/* NAV */
+.nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:white;
+  display:flex;
+  justify-content:space-around;
+  padding:10px 0;
+  z-index:1000;
+  box-shadow:0 -3px 10px rgba(0,0,0,0.1);
+}
+
+.nav-item{
+  text-align:center;
+  font-size:12px;
+}
+
+.report-btn{
+  background:red;
+  padding:15px;
+  border-radius:15px;
+  color:black;
+  font-weight:bold;
+  margin-top:-20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">ROUTES</div>
+<div class="title">AVAILABLE ROUTES</div>
+
+<div class="routes-container">
+
+<!-- CARD 1 -->
+<div class="card">
+<div class="map">
+<img src="images/Guagua-SMP.jpg" onclick="openPopup(this.src)">
+</div>
+
+<b>GUAGUA - SM PAMPANGA</b><br><br>
+Waiting Time: ~30 minutes<br><br>
+
+<span class="dot-red">● Peak</span>
+<span class="dot-green">● Off</span>
+
+<button class="save-btn"
+onclick="saveRoute('GUAGUA - SM PAMPANGA','Guagua ➜ SM Pampanga','images/Guagua-SMP.jpg',['Terminal','Guagua','SM Pampanga'])">
+Save Route
+</button>
+</div>
+
+<!-- CARD 2 -->
+<div class="card">
+<div class="map">
+<img src="images/Guagua-Floridablanca.jpg" onclick="openPopup(this.src)">
+</div>
+
+<b>GUAGUA - FLORIDABLANCA</b><br><br>
+Waiting Time: ~40 minutes<br><br>
+
+<span class="dot-red">● Peak</span>
+<span class="dot-green">● Off</span>
+
+<button class="save-btn"
+onclick="saveRoute('GUAGUA - FLORIDABLANCA','Floridablanca ➜ SM Pampanga','images/Guagua-Floridablanca.jpg',['Terminal','Floridablanca','SM Pampanga'])">
+Save Route
+</button>
+</div>
+
+<!-- CARD 3 -->
+<div class="card">
+<div class="map">
+<img src="images/Guagua-Bacolor.jpg" onclick="openPopup(this.src)">
+</div>
+
+<b>GUAGUA - BACOLOR</b><br><br>
+Waiting Time: ~25 minutes<br><br>
+
+<span class="dot-red">● Peak</span>
+<span class="dot-green">● Off</span>
+
+<button class="save-btn"
+onclick="saveRoute('GUAGUA - BACOLOR','Guagua ➜ Bacolor','images/Guagua-Bacolor.jpg',['Terminal','Guagua','Bacolor'])">
+Save Route
+</button>
+</div>
+
+<!-- CARD 4 -->
+<div class="card">
+<div class="map">
+<img src="images/Guagua-San Fernando.jpg" onclick="openPopup(this.src)">
+</div>
+
+<b>GUAGUA - SAN FERNANDO</b><br><br>
+Waiting Time: ~35 minutes<br><br>
+
+<span class="dot-red">● Peak</span>
+<span class="dot-green">● Off</span>
+
+<button class="save-btn"
+onclick="saveRoute('GUAGUA - SAN FERNANDO','Guagua ➜ San Fernando','images/Guagua-San Fernando.jpg',['Terminal','Guagua','San Fernando'])">
+Save Route
+</button>
+</div>
+
+<!-- TABLE -->
+<div class="big-card">
+
+<h3>TERMINAL</h3>
+
+<table>
+<tr><th>Item</th><th>Description</th><th>Quantity</th><th>Unit</th></tr>
+<tr><td>1</td><td>SM Pampanga</td><td>5</td><td>1930</td></tr>
+<tr><td>2</td><td>Guagua - Bacolor</td><td>3</td><td>1340</td></tr>
+<tr><td>3</td><td>Guagua - Intersection</td><td>4</td><td>1540</td></tr>
+</table>
+
+<button class="btn">FIND CLOSEST TERMINAL</button>
+
+</div>
+
+</div>
+
+<!-- NAV -->
+<div class="nav">
+<div class="nav-item" onclick="goHome()">🏠<br>HOME</div>
+<div class="nav-item" onclick="goRoutes()">🗺️<br>ROUTES</div>
+<div class="nav-item report-btn" onclick="goReport()">REPORT</div>
+<div class="nav-item" onclick="goCommunity()">🔔<br>COMMUNITY</div>
+<div class="nav-item" onclick="goAccount()">👤<br>ACCOUNT</div>
+</div>
+
+<!-- POPUP -->
+<div class="popup" id="popup" onclick="closePopup()">
+<img id="popupImg">
+</div>
+
+<script>
+
+function saveRoute(name, path, image, stops){
+
+let routes = JSON.parse(localStorage.getItem("savedRoutes")) || [];
+
+routes = routes.filter(r => typeof r === "object");
+
+if(routes.some(r => r.name === name)){
+alert("Route already saved!");
+return;
+}
+
+routes.push({
+id: Date.now(),
+name,
+path,
+image,
+stops
+});
+
+localStorage.setItem("savedRoutes", JSON.stringify(routes));
+
+alert("Route saved!");
+}
+
+/* IMAGE POPUP (mobile friendly) */
+function openPopup(src){
+document.getElementById("popup").style.display="flex";
+document.getElementById("popupImg").src=src;
+}
+
+function closePopup(){
+document.getElementById("popup").style.display="none";
+}
+
+/* NAV */
+function goHome(){ window.location.href="home.html"; }
+function goRoutes(){ window.location.href="routes.html"; }
+function goCommunity(){ window.location.href="community.html"; }
+function goReport(){ window.location.href="report.html"; }
+function goAccount(){ window.location.href="account.html"; }
+
+</script>
+
+</body>
+</html>

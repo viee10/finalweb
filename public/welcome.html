@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .logo {
+      width: 160px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 40px;
+      margin: 10px 0;
+      letter-spacing: 2px;
+    }
+
+    p {
+      color: #555;
+      font-size: 18px;
+      line-height: 1.5;
+      margin-bottom: 40px;
+    }
+
+    .next-btn {
+      width: 100%;
+      padding: 15px;
+      background: #2c00cc;
+      color: white;
+      font-size: 20px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .next-btn:hover {
+      background: #1f0099;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <!-- Replace with your actual logo -->
+    <img src="images/logo(1).jpg" class="logo">
+
+    <h1>WELCOME</h1>
+
+    <p>
+      A web based application/system designed to enhance the
+      experience of commuters in Guagua.
+    </p>
+
+    <button class="next-btn" onclick="goNext()">NEXT</button>
+  </div>
+
+  <script>
+    function goNext() {
+      window.location.href = "home.html";
+      // You can change this later:
+      // window.location.href = "dashboard.html";
+    }
+  </script>
+
+</body>
+</html>

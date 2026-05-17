@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Saved Routes</title>
+
+<style>
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#e9e9e9;
+  padding-bottom:100px;
+}
+
+/* HEADER */
+.header{
+  background:#2c008f;
+  color:white;
+  padding:20px;
+  display:flex;
+  align-items:center;
+  gap:15px;
+  font-size:30px;
+  font-weight:bold;
+}
+
+/* BACK BUTTON */
+.back-btn{
+  font-size:35px;
+  cursor:pointer;
+}
+
+/* ROUTE CARD */
+.route-card{
+  background:white;
+  margin:20px;
+  border-radius:20px;
+  padding:15px;
+  box-shadow:0 5px 12px rgba(0,0,0,0.3);
+}
+
+.route-title{
+  font-size:24px;
+  font-weight:bold;
+}
+
+/* IMAGE */
+.route-map{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+  border-radius:15px;
+  margin-top:10px;
+  cursor:pointer;
+}
+
+/* BUTTON ROW */
+.btn-row{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+}
+
+/* ACTIVE BUTTON (default blue) */
+.active-btn{
+  flex:1;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:#2c008f;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+/* ACTIVE STATE (green) */
+.active-btn.active{
+  background:#1bbf4a;
+}
+
+/* DELETE BUTTON */
+.delete-btn{
+  flex:1;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:#ff2d2d;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* POPUP */
+#popup{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.95);
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+}
+
+#popupImg{
+  width:90%;
+  max-height:90%;
+  object-fit:contain;
+  border-radius:15px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="back-btn" onclick="goBack()">←</div>
+  <div>SAVED ROUTES</div>
+</div>
+
+<!-- ROUTES -->
+<div id="routesContainer"></div>
+
+<!-- POPUP -->
+<div id="popup" onclick="closeImage()">
+  <img id="popupImg">
+</div>
+
+<script>
+
+function goBack(){
+  window.location.href = "account.html";
+}
+
+loadRoutes();
+
+function loadRoutes(){
+
+let container = document.getElementById("routesContainer");
+let saved = JSON.parse(localStorage.getItem("savedRoutes")) || [];
+
+container.innerHTML = "";
+
+saved.forEach((route, index) => {
+
+let isActive = localStorage.getItem("activeRoute") == index;
+
+container.innerHTML += `
+  <div class="route-card">
+
+    <div class="route-title">⭐ ${route.name}</div>
+
+    <img class="route-map"
+         src="${route.image}"
+         onclick="openImage(this.src)">
+
+    <div class="btn-row">
+
+      <button class="active-btn ${isActive ? 'active' : ''}"
+        onclick="toggleActive(${index})">
+        ACTIVE
+      </button>
+
+      <button class="delete-btn" onclick="deleteRoute(${index})">
+        DELETE
+      </button>
+
+    </div>
+
+  </div>
+`;
+
+});
+
+}
+
+/* TOGGLE ACTIVE */
+function toggleActive(index){
+
+let current = localStorage.getItem("activeRoute");
+
+if(current == index){
+  localStorage.removeItem("activeRoute");
+} else {
+  localStorage.setItem("activeRoute", index);
+}
+
+loadRoutes();
+}
+
+/* DELETE ROUTE */
+function deleteRoute(index){
+
+let saved = JSON.parse(localStorage.getItem("savedRoutes")) || [];
+
+saved.splice(index, 1);
+
+localStorage.setItem("savedRoutes", JSON.stringify(saved));
+
+/* reset active if needed */
+let active = localStorage.getItem("activeRoute");
+if(active == index){
+  localStorage.removeItem("activeRoute");
+}
+
+loadRoutes();
+}
+
+/* POPUP */
+function openImage(src){
+
+  // safety check (prevents undefined / broken values)
+  if(!src || src === "undefined"){
+    console.log("Invalid image source:", src);
+    return;
+  }
+
+  const popup = document.getElementById("popup");
+  const img = document.getElementById("popupImg");
+
+  // reset first (prevents old cached glitches)
+  img.src = "";
+
+  // set image
+  img.src = src;
+
+  // show popup AFTER setting src
+  popup.style.display = "flex";
+}
+
+function closeImage(){
+  document.getElementById("popup").style.display = "none";
+}
+
+</script>
+
+</body>
+</html>
